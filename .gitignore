@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.coverage
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+.docusaurus/
+.vite/
+.next/
+
+# Env
+.env
+.env.*
+
+# Docker
+*.log
+docker-data/
