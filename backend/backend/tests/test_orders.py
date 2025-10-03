@@ -1,5 +1,10 @@
-import os
-os.environ["DATABASE_URL"] = "sqlite:///./test_orders.db"
+import os, pathlib
+
+# Asegurar DB limpia antes de importar la app
+DB = "test_orders.db"
+if pathlib.Path(DB).exists():
+    os.remove(DB)
+os.environ["DATABASE_URL"] = f"sqlite:///./{DB}"
 
 from fastapi.testclient import TestClient
 from app.main import app
@@ -15,7 +20,7 @@ def test_order_flow():
     # Proveedor + Producto
     r = client.post("/suppliers", json={"name":"Prov","vat_default":21}); assert r.status_code==200
     r = client.post("/products", json={"sku":"PX-1","name":"Prod X","unit_base":"kg","factor_per_pack":1,"supplier_id":1,"cost_net":100,"cost_gross":121,"price_list":150})
-    assert r.status_code==201 or r.status_code==200
+    assert r.status_code in (200,201)
     pid = r.json()["id"]
 
     # Depósito + Stock
