@@ -1,16 +1,17 @@
-import os, sys
-
-# Agrega la carpeta 'backend/' al sys.path para poder importar 'app'
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
 from logging.config import fileConfig
 from sqlalchemy import pool
 from alembic import context
 from sqlalchemy import create_engine
+import os, sys
+
+# Asegura que 'backend' esté en sys.path para importar 'app'
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # .../backend
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
 from app.db.session import Base
 from app.core.config import settings
-from app.models import ping  # importa tus modelos
+import app.models  # registra todos los modelos
 
 config = context.config
 if config.config_file_name is not None:
