@@ -15,6 +15,3 @@ api_router.include_router(suppliers_router)
 api_router.include_router(orders_router)
 api_router.include_router(purchases_router)
 api_router.include_router(customers_router)
-
-from .customers import router as customers_router
-api_router.include_router(customers_router)

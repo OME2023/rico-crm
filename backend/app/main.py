@@ -10,6 +10,7 @@ from app.api.routes.orders import router as orders_router
 from app.api.routes.purchases import router as purchases_router
 from app.api.routes.audit import router as audit_router
 from app.db.session import Base, engine
+from app.api.routes import api_router
 
 Base.metadata.create_all(bind=engine)
 

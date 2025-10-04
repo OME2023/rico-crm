@@ -1,33 +1,34 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard";
 import Products from "@/pages/Products";
 import Stock from "@/pages/Stock";
 import Customers from "@/pages/Customers";
-import Suppliers from "@/pages/Suppliers";
-import Sellers from "@/pages/Sellers";
-import Orders from "@/pages/Orders";
-import Purchases from "@/pages/Purchases";
-import Reports from "@/pages/Reports";
-import Admin from "@/pages/Admin";
-import PriceImports from "@/pages/PriceImports";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+
+function NotFound() {
+  return (
+    <div className="p-6">
+      <h1 className="text-xl font-bold">Página no encontrada</h1>
+      <p className="text-slate-600 mt-2">Revisá la URL o usá el menú para navegar.</p>
+    </div>
+  );
+}
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/customers" element={<Customers />} />
-        <Route path="/suppliers" element={<Suppliers />} />
-        <Route path="/sellers" element={<Sellers />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/purchases" element={<Purchases />} />
-        <Route path="/stock" element={<Stock />} />
-        <Route path="/price-imports" element={<PriceImports />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/admin" element={<Admin />} />
-      </Route>
-    </Routes>
+    <BrowserRouter>
+      <ErrorBoundary>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/stock" element={<Stock />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </ErrorBoundary>
+    </BrowserRouter>
   );
 }
