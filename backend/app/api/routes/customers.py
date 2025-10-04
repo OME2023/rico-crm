@@ -1,45 +1,31 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import Optional, List
-from pydantic import BaseModel
 
 from app.db.session import get_db
 from app.models import Customer
+from app.schemas.customers import CustomerIn  # Entrada estricta
+from app.schemas.customers_safe import CustomerOutSafe  # Salida tolerante
 
 router = APIRouter(prefix="/customers", tags=["customers"])
 
-class CustomerIn(BaseModel):
-    name: str
-    cuit: Optional[str] = None
-    price_list_name: Optional[str] = None
-    status: Optional[str] = "activo"
+@router.get("", response_model=list[CustomerOutSafe])
+def list_customers(db: Session = Depends(get_db)):
+    return db.query(Customer).all()
 
-class CustomerOut(CustomerIn):
-    id: int
-    class Config:
-        from_attributes = True
+@router.get("/{customer_id}", response_model=CustomerOutSafe)
+def get_customer(customer_id: int, db: Session = Depends(get_db)):
+    c = db.get(Customer, customer_id)
+    if not c:
+        raise HTTPException(404, "Cliente no encontrado")
+    return c
 
-@router.get("", response_model=List[CustomerOut])
-def list_customers(
-    q: Optional[str] = Query(None),
-    status: Optional[str] = Query(None),
-    db: Session = Depends(get_db),
-):
-    query = db.query(Customer)
-    if q:
-        like = f"%{q}%"
-        query = query.filter((Customer.name.ilike(like)) | (Customer.cuit.ilike(like)))
-    if status:
-        query = query.filter(Customer.status == status)
-    return query.order_by(Customer.name.asc()).all()
-
-@router.post("", response_model=CustomerOut)
+@router.post("", response_model=CustomerOutSafe)
 def create_customer(payload: CustomerIn, db: Session = Depends(get_db)):
     c = Customer(**payload.model_dump())
     db.add(c); db.commit(); db.refresh(c)
     return c
 
-@router.put("/{customer_id}", response_model=CustomerOut)
+@router.put("/{customer_id}", response_model=CustomerOutSafe)
 def update_customer(customer_id: int, payload: CustomerIn, db: Session = Depends(get_db)):
     c = db.get(Customer, customer_id)
     if not c:

@@ -1,18 +1,33 @@
 import * as React from "react";
-import { cn } from "@/lib/cn";
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+type Variant = "primary" | "secondary" | "danger";
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, ...props }, ref) => (
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: Variant;
+};
+
+const classesByVariant: Record<Variant, string> = {
+  // Verde de marca (ajustá el hex si querés afinar el tono)
+  primary:
+    "bg-[#7DBB42] text-white hover:brightness-95 focus:ring-[#7DBB42]/30",
+  secondary:
+    "bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 focus:ring-slate-200",
+  danger:
+    "bg-red-600 text-white hover:bg-red-700 focus:ring-red-200",
+};
+
+export function Button({
+  variant = "secondary",
+  className = "",
+  ...props
+}: ButtonProps) {
+  const base =
+    "inline-flex items-center justify-center rounded-2xl px-5 py-2.5 text-sm font-medium transition-colors " +
+    "focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+  return (
     <button
-      ref={ref}
-      className={cn(
-        "inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-3 py-2 text-sm hover:bg-slate-100 active:scale-[.98] transition",
-        className
-      )}
+      className={`${base} ${classesByVariant[variant]} ${className}`}
       {...props}
     />
-  )
-);
-Button.displayName = "Button";
+  );
+}
