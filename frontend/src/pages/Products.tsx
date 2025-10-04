@@ -4,16 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 type Product = {
-  id: number;
-  sku: string;
-  name: string;
-  unit_base: string;
-  factor_per_pack: number;
-  supplier_id?: number | null;
-  vat_override?: number | null;
-  cost_net: number;
-  cost_gross: number;
-  price_list: number;
+  id: number; sku: string; name: string; unit_base: string;
+  factor_per_pack: number; supplier_id?: number | null; vat_override?: number | null;
+  cost_net: number; cost_gross: number; price_list: number;
 };
 
 export default function Products() {
@@ -21,7 +14,7 @@ export default function Products() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    api.get("/products").then(r => setData(r.data));
+    api.get<Product[]>("/products").then((r) => setData(r.data));
   }, []);
 
   const filtered = useMemo(() => {
@@ -35,8 +28,15 @@ export default function Products() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Productos</h1>
         <div className="flex gap-2">
-          <Input placeholder="Buscar SKU/Nombre" value={q} onChange={e => setQ(e.target.value)} className="w-64" />
-          <Button onClick={() => api.get("/products").then(r => setData(r.data))}>Refrescar</Button>
+          <Input
+            placeholder="Buscar SKU/Nombre"
+            value={q}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQ(e.target.value)}
+            className="w-64"
+          />
+          <Button onClick={() => api.get<Product[]>("/products").then((r) => setData(r.data))}>
+            Refrescar
+          </Button>
         </div>
       </div>
 
@@ -63,9 +63,7 @@ export default function Products() {
                 <td className="p-3 text-right">{p.price_list.toFixed(2)}</td>
               </tr>
             ))}
-            {!filtered.length && (
-              <tr><td className="p-3 text-slate-500" colSpan={6}>Sin resultados</td></tr>
-            )}
+            {!filtered.length && <tr><td className="p-3 text-slate-500" colSpan={6}>Sin resultados</td></tr>}
           </tbody>
         </table>
       </div>

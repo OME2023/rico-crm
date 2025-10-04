@@ -12,7 +12,7 @@ export default function Stock() {
   const [form, setForm] = useState({ product_id: "", warehouse_id: "", qty_delta: "" });
 
   const load = async () => {
-    const [a, b] = await Promise.all([api.get("/stock"), api.get("/stock/alerts")]);
+    const [a, b] = await Promise.all([api.get<Row[]>("/stock"), api.get<Alert[]>("/stock/alerts")]);
     setRows(a.data); setAlerts(b.data);
   };
 
@@ -80,9 +80,9 @@ export default function Stock() {
 
         <h2 className="text-lg font-semibold mb-2">Ajuste rápido</h2>
         <div className="flex items-center gap-2">
-          <Input placeholder="product_id" value={form.product_id} onChange={e => setForm(f => ({...f, product_id: e.target.value}))} className="w-32" />
-          <Input placeholder="warehouse_id" value={form.warehouse_id} onChange={e => setForm(f => ({...f, warehouse_id: e.target.value}))} className="w-32" />
-          <Input placeholder="qty_delta" value={form.qty_delta} onChange={e => setForm(f => ({...f, qty_delta: e.target.value}))} className="w-32" />
+          <Input placeholder="product_id" value={form.product_id} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm(f => ({...f, product_id: e.target.value}))} className="w-32" />
+          <Input placeholder="warehouse_id" value={form.warehouse_id} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm(f => ({...f, warehouse_id: e.target.value}))} className="w-32" />
+          <Input placeholder="qty_delta" value={form.qty_delta} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm(f => ({...f, qty_delta: e.target.value}))} className="w-32" />
           <Button onClick={adjust}>Aplicar</Button>
         </div>
       </div>
